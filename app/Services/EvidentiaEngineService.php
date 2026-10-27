@@ -39,11 +39,12 @@ class EvidentiaEngineService
             throw new \RuntimeException("Paper file not found: {$fullPath}");
         }
 
+        $fullPath = realpath($fullPath) ?: str_replace('/', DIRECTORY_SEPARATOR, $fullPath);
         $resultData = null;
 
         // Try Python FastAPI microservice first
         try {
-            $response = Http::timeout(30)->post("{$this->engineUrl}/api/v1/assess-file", [
+            $response = Http::timeout(120)->post("{$this->engineUrl}/api/v1/assess-file", [
                 'file_path' => $fullPath,
                 'title' => $paper->title,
             ]);
@@ -57,10 +58,10 @@ class EvidentiaEngineService
 
         // Direct Process CLI fallback if microservice is offline
         if (! $resultData) {
-            $scriptPath = base_path('python-engine/main_cli.py');
+            $scriptPath = realpath(base_path('python-engine/main_cli.py')) ?: str_replace('/', DIRECTORY_SEPARATOR, base_path('python-engine/main_cli.py'));
             $command = ['python', $scriptPath, $fullPath, $paper->title];
 
-            $processResult = Process::timeout(60)->run($command);
+            $processResult = Process::timeout(120)->run($command);
 
             if (! $processResult->successful()) {
                 $err = $processResult->errorOutput() ?: $processResult->output();
@@ -101,13 +102,13 @@ class EvidentiaEngineService
             foreach ($resultData['references'] ?? [] as $ref) {
                 $savedRef = PaperReference::create([
                     'paper_id' => $paper->id,
-                    'citation_key' => $ref['citation_key'] ?? 'Unknown',
+                    'citation_key' => mb_substr($ref['citation_key'] ?? 'Unknown', 0, 250),
                     'raw_text' => $ref['raw_text'] ?? '',
                     'authors' => $ref['authors'] ?? null,
-                    'year' => $ref['year'] ?? null,
+                    'year' => ! empty($ref['year']) ? mb_substr($ref['year'], 0, 50) : null,
                     'title' => $ref['title'] ?? null,
                     'journal_or_publisher' => $ref['source'] ?? null,
-                    'doi' => $ref['doi'] ?? null,
+                    'doi' => ! empty($ref['doi']) ? mb_substr($ref['doi'], 0, 250) : null,
                     'open_access_url' => $ref['open_access_url'] ?? null,
                     'retrieval_status' => $ref['retrieval_status'] ?? 'NOT_FOUND',
                     'cached_full_text_path' => $ref['cached_full_text_path'] ?? null,
@@ -120,11 +121,22 @@ class EvidentiaEngineService
                 $citKey = $claim['citation_key'] ?? '';
                 $refModel = $savedReferences[$citKey] ?? null;
 
+                // Fallback: match by author surname if exact key differs
+                if (! $refModel) {
+                    $firstWord = explode(' ', $citKey)[0] ?? '';
+                    foreach ($savedReferences as $k => $candidate) {
+                        if (str_contains(strtolower($k), strtolower($firstWord))) {
+                            $refModel = $candidate;
+                            break;
+                        }
+                    }
+                }
+
                 $claimModel = Claim::create([
                     'paper_id' => $paper->id,
                     'paper_reference_id' => $refModel?->id,
                     'claim_text' => $claim['claim_text'],
-                    'in_text_citation' => $claim['in_text_citation'],
+                    'in_text_citation' => mb_substr($claim['in_text_citation'], 0, 250),
                     'paragraph_index' => $claim['paragraph_index'] ?? 0,
                     'verdict' => $claim['verdict'] ?? 'UNVERIFIABLE',
                 ]);

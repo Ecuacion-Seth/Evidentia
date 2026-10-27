@@ -110,7 +110,8 @@ class CitationExtractor:
         Builds a canonical key for in-text matching, e.g., 'Vaswani et al., 2017' or 'Smith & Jones, 2020'.
         """
         first_author = authors.split(',')[0].strip()
-        # Clean any initials
+        # Clean any existing 'et al' or initials
+        first_author = re.sub(r'\s+et\s+al\.?', '', first_author, flags=re.IGNORECASE).strip()
         first_author = re.sub(r'\s+[A-Z]\.?.*', '', first_author).strip()
 
         if "&" in authors or " and " in authors:

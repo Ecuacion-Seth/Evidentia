@@ -155,9 +155,42 @@
                         </div>
                     @endif
                 @else
-                    <div class="text-center py-20 text-slate-400">
-                        <p class="text-sm">Document is being analyzed. Please wait a moment...</p>
-                    </div>
+                    @if ($paper->status === 'failed')
+                        <div class="text-center py-16 px-4 max-w-md mx-auto">
+                            <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-bold text-white mb-2">Assessment Could Not Complete</h3>
+                            <p class="text-xs text-rose-300 bg-rose-950/40 p-3 rounded-lg border border-rose-500/20 mb-4 font-mono text-left overflow-x-auto">
+                                {{ $paper->error_message ?? 'An unexpected engine error occurred.' }}
+                            </p>
+                            <form action="{{ route('papers.reassess', $paper) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors">
+                                    Retry Assessment Now
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <div class="text-center py-20 px-4 max-w-md mx-auto">
+                            <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4 relative">
+                                <svg class="w-7 h-7 animate-spin text-indigo-400" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-bold text-white mb-1.5">Document Integrity Analysis in Progress</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                Extracting claims, resolving citation DOIs, and querying OpenAlex & Crossref for open-access ground truth.
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-[11px] text-slate-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Live polling status... This page will update automatically.
+                            </div>
+                        </div>
+                    @endif
                 @endif
             </div>
         </section>
@@ -366,5 +399,19 @@
             setTimeout(() => card.classList.remove('ring-2', 'ring-indigo-500'), 2000);
         }
     }
+
+    @if ($paper->status === 'processing' || $paper->status === 'pending')
+    const pollInterval = setInterval(() => {
+        fetch('{{ route('papers.status', $paper) }}')
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'completed' || data.status === 'failed') {
+                    clearInterval(pollInterval);
+                    window.location.reload();
+                }
+            })
+            .catch(() => {});
+    }, 2500);
+    @endif
 </script>
 @endsection
