@@ -3,7 +3,7 @@
 @section('content')
 <div class="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
     <!-- Top Summary Ribbon -->
-    <section class="border-b border-[#E6E4DD] dark:border-[#383530] bg-white/95 dark:bg-[#1E1C1A]/95 px-4 sm:px-6 py-3 flex-shrink-0 backdrop-blur-md">
+    <section class="border-b border-[#E2E8F0] dark:border-[#1E293B] bg-white/95 dark:bg-[#111C35]/95 px-4 sm:px-6 py-3 flex-shrink-0 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <!-- Paper Info -->
             <div class="min-w-0">
@@ -12,17 +12,17 @@
                         {{ $paper->status === 'completed' ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20' : ($paper->status === 'failed' ? 'bg-rose-500/10 text-rose-800 dark:text-rose-400 border border-rose-500/20' : 'bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20') }}">
                         {{ $paper->status }}
                     </span>
-                    <span class="text-xs text-[#6B6760] dark:text-[#A39E93]">ID: #{{ $paper->id }} &bull; {{ $paper->created_at->diffForHumans() }}</span>
+                    <span class="text-xs text-[#64748B] dark:text-[#94A3B8]">ID: #{{ $paper->id }} &bull; {{ $paper->created_at->diffForHumans() }}</span>
                 </div>
-                <h1 class="text-lg font-serif font-bold text-[#1F1E1B] dark:text-[#ECEBE5] truncate max-w-xl" title="{{ $paper->title }}">{{ $paper->title }}</h1>
+                <h1 class="text-lg font-serif font-bold text-[#0F172A] dark:text-[#F1F5F9] truncate max-w-xl" title="{{ $paper->title }}">{{ $paper->title }}</h1>
             </div>
 
             <!-- Key Integrity Metrics & Claims Distribution -->
             <div class="flex flex-wrap items-center gap-2.5">
                 <!-- Practical Coverage Metric -->
-                <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530]" title="Proportion of cited external sources retrievable as open-access full text">
+                <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B]" title="Proportion of cited external sources retrievable as open-access full text">
                     <div class="text-right">
-                        <div class="text-[10px] uppercase font-semibold text-[#6B6760] dark:text-[#A39E93]">Practical Coverage</div>
+                        <div class="text-[10px] uppercase font-semibold text-[#64748B] dark:text-[#94A3B8]">Practical Coverage</div>
                         <div class="text-sm font-bold text-emerald-700 dark:text-emerald-400 font-mono">{{ number_format($paper->practical_coverage, 1) }}% OA</div>
                     </div>
                     <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
@@ -33,7 +33,7 @@
                 </div>
 
                 <!-- Claims Breakdown Chips -->
-                <div class="flex items-center gap-1.5 p-1 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530] text-xs font-medium">
+                <div class="flex items-center gap-1.5 p-1 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B] text-xs font-medium">
                     <span class="px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/20" title="Supported Claims">
                         ✓ {{ $stats['supported'] }} Supported
                     </span>
@@ -43,7 +43,7 @@
                     <span class="px-2 py-0.5 rounded-lg bg-rose-500/10 text-rose-800 dark:text-rose-300 border border-rose-500/20" title="Unsupported Claims">
                         ✕ {{ $stats['unsupported'] }} Unsupported
                     </span>
-                    <span class="px-2 py-0.5 rounded-lg bg-[#EFECE6] dark:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93] border border-[#E6E4DD] dark:border-[#383530]" title="Unverifiable (Paywalled or Missing)">
+                    <span class="px-2 py-0.5 rounded-lg bg-[#EDF2F7] dark:bg-[#15203B] text-[#475569] dark:text-[#94A3B8] border border-[#E2E8F0] dark:border-[#1E293B]" title="Unverifiable (Paywalled or Missing)">
                         ? {{ $stats['unverifiable'] }} Unverifiable
                     </span>
                 </div>
@@ -51,15 +51,15 @@
                 <!-- Supplementary AI Regularity Indicator (With Modal Disclaimer) -->
                 @if ($paper->ai_supplementary_score !== null)
                     <div class="relative group cursor-pointer" onclick="document.getElementById('aiDisclaimerModal').classList.remove('hidden')">
-                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530] hover:border-terracotta-500/50 transition-colors">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B] hover:border-blue-500/50 transition-colors">
                             <div class="text-right">
-                                <div class="text-[10px] uppercase font-semibold text-[#6B6760] dark:text-[#A39E93] flex items-center justify-end gap-1">
+                                <div class="text-[10px] uppercase font-semibold text-[#64748B] dark:text-[#94A3B8] flex items-center justify-end gap-1">
                                     AI Regularity
-                                    <svg class="w-3 h-3 text-[#A39E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-3 h-3 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <div class="text-xs font-semibold text-terracotta-600 dark:text-terracotta-400 font-mono">{{ $paper->ai_supplementary_score }}/100</div>
+                                <div class="text-xs font-semibold text-blue-600 dark:text-blue-400 font-mono">{{ $paper->ai_supplementary_score }}/100</div>
                             </div>
                         </div>
                     </div>
@@ -68,14 +68,14 @@
                 <!-- Actions: Export JSON & Re-run -->
                 <div class="flex items-center gap-1.5">
                     <a href="{{ route('papers.export.json', $paper) }}" target="_blank"
-                        class="p-2 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] hover:bg-[#EFECE6] dark:hover:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93] hover:text-[#1F1E1B] dark:hover:text-[#ECEBE5] border border-[#E6E4DD] dark:border-[#383530] transition-colors" title="Export JSON Evidence Report">
+                        class="p-2 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] hover:bg-[#EDF2F7] dark:hover:bg-[#15203B] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#1E293B] transition-colors" title="Export JSON Evidence Report">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                     </a>
                     <form action="{{ route('papers.reassess', $paper) }}" method="POST" onsubmit="return confirm('Re-run full assessment pipeline?')">
                         @csrf
-                        <button type="submit" class="p-2 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] hover:bg-[#EFECE6] dark:hover:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93] hover:text-[#1F1E1B] dark:hover:text-[#ECEBE5] border border-[#E6E4DD] dark:border-[#383530] transition-colors" title="Re-scan Document">
+                        <button type="submit" class="p-2 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] hover:bg-[#EDF2F7] dark:hover:bg-[#15203B] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#1E293B] transition-colors" title="Re-scan Document">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
@@ -87,21 +87,21 @@
     </section>
 
     <!-- Split-Screen Interactive Workspace -->
-    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-[#FAF9F5] dark:bg-[#181715]">
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-[#F8FAFC] dark:bg-[#0B1120]">
         <!-- LEFT PANE: Document Viewer with Color-Coded Highlighted Claims (cols 12 -> 6) -->
-        <section class="lg:col-span-6 border-r border-[#E6E4DD] dark:border-[#383530] flex flex-col h-full overflow-hidden bg-[#FAF9F5] dark:bg-[#181715]">
-            <div class="px-6 py-3 border-b border-[#E6E4DD] dark:border-[#383530] bg-[#FAF9F5] dark:bg-[#181715] flex items-center justify-between flex-shrink-0">
+        <section class="lg:col-span-6 border-r border-[#E2E8F0] dark:border-[#1E293B] flex flex-col h-full overflow-hidden bg-[#F8FAFC] dark:bg-[#0B1120]">
+            <div class="px-6 py-3 border-b border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B1120] flex items-center justify-between flex-shrink-0">
                 <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span class="text-xs font-semibold uppercase tracking-wider text-[#6B6760] dark:text-[#A39E93]">Document Reader</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-[#475569] dark:text-[#94A3B8]">Document Reader</span>
                 </div>
-                <span class="text-xs text-[#6B6760] dark:text-[#A39E93]">Click highlighted claims to inspect grounds</span>
+                <span class="text-xs text-[#64748B] dark:text-[#94A3B8]">Click highlighted claims to inspect grounds</span>
             </div>
 
             <!-- Scrollable Document Text -->
-            <div class="flex-1 overflow-y-auto p-6 sm:p-10 space-y-6 text-[#1F1E1B] dark:text-[#ECEBE5] font-serif text-base sm:text-[17px] leading-[1.8]" id="documentBody">
+            <div class="flex-1 overflow-y-auto p-6 sm:p-10 space-y-6 text-[#0F172A] dark:text-[#F1F5F9] font-serif text-base sm:text-[17px] leading-[1.8]" id="documentBody">
                 @if ($paper->document_text)
                     @php
                         // Process text to wrap matched claims with physical highlighter style spans
@@ -109,14 +109,14 @@
                         foreach ($paper->claims as $claim) {
                             $escapedClaim = e($claim->claim_text);
                             $badgeClass = match($claim->effective_verdict) {
-                                'SUPPORTED' => 'bg-emerald-500/20 text-[#1F1E1B] dark:text-[#ECEBE5] border-b-2 border-emerald-600/70 dark:border-emerald-500/70 hover:bg-emerald-500/30',
-                                'PARTIALLY_SUPPORTED' => 'bg-amber-500/20 text-[#1F1E1B] dark:text-[#ECEBE5] border-b-2 border-amber-600/70 dark:border-amber-500/70 hover:bg-amber-500/30',
-                                'UNSUPPORTED' => 'bg-rose-500/20 text-[#1F1E1B] dark:text-[#ECEBE5] border-b-2 border-rose-600/70 dark:border-rose-500/70 hover:bg-rose-500/30',
-                                default => 'bg-stone-500/15 text-[#1F1E1B] dark:text-[#ECEBE5] border-b-2 border-stone-400 dark:border-stone-500 hover:bg-stone-500/25',
+                                'SUPPORTED' => 'bg-emerald-500/20 text-[#0F172A] dark:text-[#F1F5F9] border-b-2 border-emerald-600/70 dark:border-emerald-500/70 hover:bg-emerald-500/30',
+                                'PARTIALLY_SUPPORTED' => 'bg-amber-500/20 text-[#0F172A] dark:text-[#F1F5F9] border-b-2 border-amber-600/70 dark:border-amber-500/70 hover:bg-amber-500/30',
+                                'UNSUPPORTED' => 'bg-rose-500/20 text-[#0F172A] dark:text-[#F1F5F9] border-b-2 border-rose-600/70 dark:border-rose-500/70 hover:bg-rose-500/30',
+                                default => 'bg-slate-400/15 text-[#0F172A] dark:text-[#F1F5F9] border-b-2 border-slate-400 dark:border-slate-500 hover:bg-slate-400/25',
                             };
 
                             $highlightSpan = '<mark class="cursor-pointer rounded px-1.5 py-0.5 transition-all inline font-serif ' . $badgeClass . '" data-claim-id="' . $claim->id . '" onclick="focusClaim(' . $claim->id . ')">'
-                                . $escapedClaim . ' <span class="text-[11px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#6B6760] dark:text-[#A39E93]">' . e($claim->in_text_citation) . '</span></mark>';
+                                . $escapedClaim . ' <span class="text-[11px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#64748B] dark:text-[#94A3B8]">' . e($claim->in_text_citation) . '</span></mark>';
 
                             // Replace first exact occurrence
                             $pos = strpos($renderedText, $escapedClaim);
@@ -126,26 +126,26 @@
                         }
                     @endphp
 
-                    <div class="prose dark:prose-invert max-w-none text-[#1F1E1B] dark:text-[#ECEBE5] font-serif leading-[1.8] whitespace-pre-wrap">
+                    <div class="prose dark:prose-invert max-w-none text-[#0F172A] dark:text-[#F1F5F9] font-serif leading-[1.8] whitespace-pre-wrap">
                         {!! $renderedText !!}
                     </div>
 
                     @if ($paper->references->isNotEmpty())
-                        <div class="mt-12 pt-8 border-t border-[#E6E4DD] dark:border-[#383530]">
-                            <h2 class="text-sm font-sans font-bold text-[#1F1E1B] dark:text-[#ECEBE5] uppercase tracking-wider mb-4">References</h2>
-                            <div class="space-y-3 font-mono text-xs text-[#6B6760] dark:text-[#A39E93]">
+                        <div class="mt-12 pt-8 border-t border-[#E2E8F0] dark:border-[#1E293B]">
+                            <h2 class="text-sm font-sans font-bold text-[#0F172A] dark:text-[#F1F5F9] uppercase tracking-wider mb-4">References</h2>
+                            <div class="space-y-3 font-mono text-xs text-[#64748B] dark:text-[#94A3B8]">
                                 @foreach ($paper->references as $ref)
-                                    <div class="p-3 rounded-xl bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530]">
+                                    <div class="p-3 rounded-xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B]">
                                         <div class="flex items-center justify-between mb-1">
-                                            <span class="font-sans font-semibold text-[#1F1E1B] dark:text-[#ECEBE5]">{{ $ref->citation_key }}</span>
+                                            <span class="font-sans font-semibold text-[#0F172A] dark:text-[#F1F5F9]">{{ $ref->citation_key }}</span>
                                             <span class="px-2 py-0.5 rounded text-[10px] font-semibold
-                                                {{ $ref->retrieval_status === 'RETRIEVED' ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20' : ($ref->retrieval_status === 'PAYWALLED' ? 'bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20' : 'bg-[#EFECE6] dark:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93]') }}">
+                                                {{ $ref->retrieval_status === 'RETRIEVED' ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20' : ($ref->retrieval_status === 'PAYWALLED' ? 'bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20' : 'bg-[#EDF2F7] dark:bg-[#15203B] text-[#475569] dark:text-[#94A3B8]') }}">
                                                 {{ $ref->retrieval_status }}
                                             </span>
                                         </div>
                                         <p class="leading-relaxed">{{ $ref->raw_text }}</p>
                                         @if ($ref->doi)
-                                            <a href="https://doi.org/{{ $ref->doi }}" target="_blank" class="inline-block mt-1 text-terracotta-600 dark:text-terracotta-400 hover:underline">
+                                            <a href="https://doi.org/{{ $ref->doi }}" target="_blank" class="inline-block mt-1 text-blue-600 dark:text-blue-400 hover:underline">
                                                 doi:{{ $ref->doi }} &nearr;
                                             </a>
                                         @endif
@@ -162,30 +162,30 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                             </div>
-                            <h3 class="text-base font-serif font-bold text-[#1F1E1B] dark:text-[#ECEBE5] mb-2">Assessment Could Not Complete</h3>
+                            <h3 class="text-base font-serif font-bold text-[#0F172A] dark:text-[#F1F5F9] mb-2">Assessment Could Not Complete</h3>
                             <p class="text-xs text-rose-800 dark:text-rose-300 bg-rose-500/10 p-3 rounded-lg border border-rose-500/20 mb-4 font-mono text-left overflow-x-auto">
                                 {{ $paper->error_message ?? 'An unexpected engine error occurred.' }}
                             </p>
                             <form action="{{ route('papers.reassess', $paper) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="px-4 py-2 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white text-xs font-semibold transition-colors">
+                                <button type="submit" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">
                                     Retry Assessment Now
                                 </button>
                             </form>
                         </div>
                     @else
                         <div class="text-center py-20 px-4 max-w-md mx-auto">
-                            <div class="w-14 h-14 rounded-2xl bg-terracotta-500/10 border border-terracotta-500/20 text-terracotta-500 flex items-center justify-center mx-auto mb-4 relative">
-                                <svg class="w-7 h-7 animate-spin text-terracotta-500" fill="none" viewBox="0 0 24 24">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-4 relative">
+                                <svg class="w-7 h-7 animate-spin text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                             </div>
-                            <h3 class="text-base font-serif font-bold text-[#1F1E1B] dark:text-[#ECEBE5] mb-1.5">Document Integrity Analysis in Progress</h3>
-                            <p class="text-xs text-[#6B6760] dark:text-[#A39E93] leading-relaxed mb-4">
+                            <h3 class="text-base font-serif font-bold text-[#0F172A] dark:text-[#F1F5F9] mb-1.5">Document Integrity Analysis in Progress</h3>
+                            <p class="text-xs text-[#64748B] dark:text-[#94A3B8] leading-relaxed mb-4">
                                 Extracting claims, resolving citation DOIs, and querying OpenAlex & Crossref for open-access ground truth.
                             </p>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530] text-[11px] text-[#6B6760] dark:text-[#A39E93]">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] text-[11px] text-[#64748B] dark:text-[#94A3B8]">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 Live status polling active...
                             </div>
@@ -196,30 +196,30 @@
         </section>
 
         <!-- RIGHT PANE: Toulmin Evidence Inspector (cols 12 -> 6) -->
-        <section class="lg:col-span-6 flex flex-col h-full overflow-hidden bg-[#F5F4EE]/60 dark:bg-[#1C1B19]/60">
-            <div class="px-6 py-3 border-b border-[#E6E4DD] dark:border-[#383530] bg-[#FAF9F5] dark:bg-[#181715] flex items-center justify-between flex-shrink-0">
+        <section class="lg:col-span-6 flex flex-col h-full overflow-hidden bg-[#F1F5F9]/60 dark:bg-[#0E1626]/60">
+            <div class="px-6 py-3 border-b border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B1120] flex items-center justify-between flex-shrink-0">
                 <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
-                    <span class="text-xs font-semibold uppercase tracking-wider text-[#6B6760] dark:text-[#A39E93]">Toulmin Evidence Inspector</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-[#475569] dark:text-[#94A3B8]">Toulmin Evidence Inspector</span>
                 </div>
-                <span class="text-xs font-mono text-[#6B6760] dark:text-[#A39E93]">{{ $paper->claims->count() }} Claims Audited</span>
+                <span class="text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">{{ $paper->claims->count() }} Claims Audited</span>
             </div>
 
             <!-- Scrollable Cards Feed -->
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4" id="evidenceInspector">
                 @forelse ($paper->claims as $claim)
                     <article id="claim-card-{{ $claim->id }}"
-                        class="p-5 rounded-2xl bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530] shadow-xs transition-all duration-200">
+                        class="p-5 rounded-2xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] shadow-xs transition-all duration-200">
                         
                         <!-- Header with Status Badge -->
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full bg-[#EFECE6] dark:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93] flex items-center justify-center text-xs font-bold font-mono">
+                                <span class="w-6 h-6 rounded-full bg-[#EDF2F7] dark:bg-[#15203B] text-[#475569] dark:text-[#94A3B8] flex items-center justify-center text-xs font-bold font-mono">
                                     {{ $loop->iteration }}
                                 </span>
-                                <span class="text-xs font-mono font-semibold text-[#1F1E1B] dark:text-[#ECEBE5]">
+                                <span class="text-xs font-mono font-semibold text-[#0F172A] dark:text-[#F1F5F9]">
                                     {{ $claim->in_text_citation }}
                                 </span>
                             </div>
@@ -231,12 +231,12 @@
                                         'SUPPORTED' => 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/25',
                                         'PARTIALLY_SUPPORTED' => 'bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/25',
                                         'UNSUPPORTED' => 'bg-rose-500/10 text-rose-800 dark:text-rose-400 border border-rose-500/25',
-                                        default => 'bg-[#EFECE6] dark:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93] border border-[#E6E4DD] dark:border-[#383530]',
+                                        default => 'bg-[#EDF2F7] dark:bg-[#15203B] text-[#475569] dark:text-[#94A3B8] border border-[#E2E8F0] dark:border-[#1E293B]',
                                     } }}">
                                     {{ str_replace('_', ' ', $claim->effective_verdict) }}
                                 </span>
                                 @if ($claim->instructor_override_verdict)
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-terracotta-500/15 text-terracotta-800 dark:text-terracotta-300 border border-terracotta-500/25" title="Manually overridden by instructor">
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-blue-500/15 text-blue-800 dark:text-blue-300 border border-blue-500/25" title="Manually overridden by instructor">
                                         Override
                                     </span>
                                 @endif
@@ -245,14 +245,14 @@
 
                         <!-- 1. The Claim (Toulmin Claim) -->
                         <div class="mb-3.5">
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-[#6B6760] dark:text-[#A39E93] block mb-1">Extracted Student Claim</span>
-                            <blockquote class="text-sm font-serif text-[#1F1E1B] dark:text-[#ECEBE5] pl-3 border-l-2 border-terracotta-500/60 leading-relaxed italic">
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-[#64748B] dark:text-[#94A3B8] block mb-1">Extracted Student Claim</span>
+                            <blockquote class="text-sm font-serif text-[#0F172A] dark:text-[#F1F5F9] pl-3 border-l-2 border-blue-600/70 dark:border-blue-500/70 leading-relaxed italic">
                                 &ldquo;{{ $claim->claim_text }}&rdquo;
                             </blockquote>
                         </div>
 
                         <!-- 2. Grounds / Evidence Quote (Toulmin Grounds) -->
-                        <div class="mb-3.5 p-3.5 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530]">
+                        <div class="mb-3.5 p-3.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B]">
                             <div class="flex items-center justify-between text-[10px] uppercase font-semibold tracking-wider mb-1.5">
                                 <span class="text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -261,16 +261,16 @@
                                     Grounds: Retrieved Evidence Quote
                                 </span>
                                 @if ($claim->evidence?->confidence_score)
-                                    <span class="text-[#6B6760] dark:text-[#A39E93] font-mono">{{ round($claim->evidence->confidence_score * 100) }}% match confidence</span>
+                                    <span class="text-[#64748B] dark:text-[#94A3B8] font-mono">{{ round($claim->evidence->confidence_score * 100) }}% match confidence</span>
                                 @endif
                             </div>
                             
                             @if ($claim->evidence?->evidence_quote)
-                                <p class="text-xs sm:text-[13px] font-serif text-[#1F1E1B] dark:text-[#ECEBE5] italic leading-relaxed">
+                                <p class="text-xs sm:text-[13px] font-serif text-[#0F172A] dark:text-[#F1F5F9] italic leading-relaxed">
                                     &ldquo;{{ $claim->evidence->evidence_quote }}&rdquo;
                                 </p>
                             @else
-                                <p class="text-xs text-[#6B6760] dark:text-[#A39E93] italic">
+                                <p class="text-xs text-[#64748B] dark:text-[#94A3B8] italic">
                                     {{ $claim->evidence?->reasoning_warrant ?? 'No full-text evidence retrieved for this source.' }}
                                 </p>
                             @endif
@@ -278,7 +278,7 @@
 
                         <!-- 3. Warrant / Reasoning (Toulmin Warrant) -->
                         @if ($claim->evidence?->reasoning_warrant)
-                            <div class="mb-3.5 text-xs text-[#1F1E1B] dark:text-[#ECEBE5] bg-amber-500/5 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 leading-relaxed">
+                            <div class="mb-3.5 text-xs text-[#0F172A] dark:text-[#F1F5F9] bg-amber-500/5 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 leading-relaxed">
                                 <strong class="text-amber-800 dark:text-amber-300 uppercase text-[10px] tracking-wider block mb-0.5">Warrant & Verification Reasoning:</strong>
                                 {{ $claim->evidence->reasoning_warrant }}
                             </div>
@@ -286,21 +286,21 @@
 
                         <!-- 4. Cited Source Bibliographic Information -->
                         @if ($claim->reference)
-                            <div class="pt-3 border-t border-[#E6E4DD] dark:border-[#383530] text-xs text-[#6B6760] dark:text-[#A39E93] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="pt-3 border-t border-[#E2E8F0] dark:border-[#1E293B] text-xs text-[#64748B] dark:text-[#94A3B8] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <div class="truncate max-w-sm">
-                                    <span class="font-semibold text-[#1F1E1B] dark:text-[#ECEBE5]">{{ $claim->reference->citation_key }}</span>:
-                                    <span class="italic text-[#6B6760] dark:text-[#A39E93]">{{ $claim->reference->title }}</span>
+                                    <span class="font-semibold text-[#0F172A] dark:text-[#F1F5F9]">{{ $claim->reference->citation_key }}</span>:
+                                    <span class="italic text-[#64748B] dark:text-[#94A3B8]">{{ $claim->reference->title }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 flex-shrink-0">
                                     @if ($claim->reference->open_access_url)
                                         <a href="{{ $claim->reference->open_access_url }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-[#FAF9F5] dark:bg-[#181715] hover:bg-[#EFECE6] dark:hover:bg-[#2A2825] text-terracotta-600 dark:text-terracotta-400 border border-[#E6E4DD] dark:border-[#383530] transition-colors">
+                                            class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-[#F8FAFC] dark:bg-[#0B1120] hover:bg-[#EDF2F7] dark:hover:bg-[#15203B] text-blue-600 dark:text-blue-400 border border-[#E2E8F0] dark:border-[#1E293B] transition-colors">
                                             Open-Access PDF &nearr;
                                         </a>
                                     @endif
                                     @if ($claim->reference->doi)
                                         <a href="https://doi.org/{{ $claim->reference->doi }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-[#FAF9F5] dark:bg-[#181715] hover:bg-[#EFECE6] dark:hover:bg-[#2A2825] text-[#6B6760] dark:text-[#A39E93] border border-[#E6E4DD] dark:border-[#383530] transition-colors">
+                                            class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-[#F8FAFC] dark:bg-[#0B1120] hover:bg-[#EDF2F7] dark:hover:bg-[#15203B] text-[#64748B] dark:text-[#94A3B8] border border-[#E2E8F0] dark:border-[#1E293B] transition-colors">
                                             DOI &nearr;
                                         </a>
                                     @endif
@@ -309,21 +309,21 @@
                         @endif
 
                         <!-- 5. Instructor Review & Manual Override Accordion -->
-                        <details class="group mt-3.5 pt-3 border-t border-[#E6E4DD] dark:border-[#383530]">
-                            <summary class="cursor-pointer text-[11px] text-[#6B6760] dark:text-[#A39E93] hover:text-terracotta-600 dark:hover:text-terracotta-400 font-medium flex items-center gap-1.5 transition-colors select-none list-none">
+                        <details class="group mt-3.5 pt-3 border-t border-[#E2E8F0] dark:border-[#1E293B]">
+                            <summary class="cursor-pointer text-[11px] text-[#64748B] dark:text-[#94A3B8] hover:text-blue-600 dark:hover:text-blue-400 font-medium flex items-center gap-1.5 transition-colors select-none list-none">
                                 <svg class="w-3.5 h-3.5 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
                                 <span>Instructor Review / Manual Override</span>
                             </summary>
 
-                            <div class="mt-3 p-3.5 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530] space-y-3">
+                            <div class="mt-3 p-3.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B] space-y-3">
                                 <form action="{{ route('claims.override', $claim) }}" method="POST">
                                     @csrf
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold uppercase text-[#6B6760] dark:text-[#A39E93] mb-1">Override Verdict</label>
-                                            <select name="instructor_override_verdict" class="w-full text-xs rounded-lg bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530] text-[#1F1E1B] dark:text-[#ECEBE5] px-2.5 py-1.5 outline-none focus:border-terracotta-500">
+                                            <label class="block text-[10px] font-semibold uppercase text-[#475569] dark:text-[#94A3B8] mb-1">Override Verdict</label>
+                                            <select name="instructor_override_verdict" class="w-full text-xs rounded-lg bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] text-[#0F172A] dark:text-[#F1F5F9] px-2.5 py-1.5 outline-none focus:border-blue-500">
                                                 <option value="SUPPORTED" {{ $claim->effective_verdict === 'SUPPORTED' ? 'selected' : '' }}>SUPPORTED</option>
                                                 <option value="PARTIALLY_SUPPORTED" {{ $claim->effective_verdict === 'PARTIALLY_SUPPORTED' ? 'selected' : '' }}>PARTIALLY SUPPORTED</option>
                                                 <option value="UNSUPPORTED" {{ $claim->effective_verdict === 'UNSUPPORTED' ? 'selected' : '' }}>UNSUPPORTED</option>
@@ -331,12 +331,12 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold uppercase text-[#6B6760] dark:text-[#A39E93] mb-1">Instructor Review Notes</label>
+                                            <label class="block text-[10px] font-semibold uppercase text-[#475569] dark:text-[#94A3B8] mb-1">Instructor Review Notes</label>
                                             <input type="text" name="instructor_notes" value="{{ $claim->instructor_notes }}" placeholder="e.g. Verified in printed edition p. 45"
-                                                class="w-full text-xs rounded-lg bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530] text-[#1F1E1B] dark:text-[#ECEBE5] placeholder-[#A39E93] px-2.5 py-1.5 outline-none focus:border-terracotta-500">
+                                                class="w-full text-xs rounded-lg bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] text-[#0F172A] dark:text-[#F1F5F9] placeholder-[#94A3B8] px-2.5 py-1.5 outline-none focus:border-blue-500">
                                         </div>
                                     </div>
-                                    <button type="submit" class="px-3 py-1.5 rounded-lg bg-terracotta-500 hover:bg-terracotta-600 text-white text-xs font-semibold transition-colors cursor-pointer">
+                                    <button type="submit" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors cursor-pointer">
                                         Save Instructor Decision
                                     </button>
                                 </form>
@@ -344,7 +344,7 @@
                         </details>
                     </article>
                 @empty
-                    <div class="text-center py-20 text-[#6B6760] dark:text-[#A39E93]">
+                    <div class="text-center py-20 text-[#64748B] dark:text-[#94A3B8]">
                         <p class="text-sm">No citations or claims were detected in this document.</p>
                     </div>
                 @endforelse
@@ -355,19 +355,19 @@
 
 <!-- AI Regularity Indicator Disclaimer Modal -->
 <div id="aiDisclaimerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/70 backdrop-blur-xs">
-    <div class="bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530] rounded-2xl max-w-lg w-full p-6 shadow-xl relative">
+    <div class="bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] rounded-2xl max-w-lg w-full p-6 shadow-xl relative">
         <div class="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 mb-3">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h3 class="text-base font-serif font-bold text-[#1F1E1B] dark:text-[#ECEBE5]">Supplementary AI Regularity Indicator</h3>
+            <h3 class="text-base font-serif font-bold text-[#0F172A] dark:text-[#F1F5F9]">Supplementary AI Regularity Indicator</h3>
         </div>
-        <p class="text-xs text-[#6B6760] dark:text-[#A39E93] leading-relaxed mb-4">
+        <p class="text-xs text-[#64748B] dark:text-[#94A3B8] leading-relaxed mb-4">
             {{ $paper->ai_disclaimer ?? 'Notice: This score evaluates statistical burstiness and entropy. It does NOT prove AI authorship or ground-truth generation. Academic writing often exhibits low perplexity due to strict formal structures. Evaluate academic integrity exclusively through the inspectable Claim-Evidence audit.' }}
         </p>
         <div class="flex justify-end">
             <button type="button" onclick="document.getElementById('aiDisclaimerModal').classList.add('hidden')"
-                class="px-4 py-2 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] hover:bg-[#EFECE6] dark:hover:bg-[#2A2825] border border-[#E6E4DD] dark:border-[#383530] text-[#1F1E1B] dark:text-[#ECEBE5] text-xs font-semibold transition-colors cursor-pointer">
+                class="px-4 py-2 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] hover:bg-[#EDF2F7] dark:hover:bg-[#15203B] border border-[#E2E8F0] dark:border-[#1E293B] text-[#0F172A] dark:text-[#F1F5F9] text-xs font-semibold transition-colors cursor-pointer">
                 I Understand
             </button>
         </div>
@@ -378,18 +378,18 @@
     // Synchronous click navigation: clicking highlighted claim highlights & scrolls right card
     function focusClaim(claimId) {
         // Highlight active mark
-        document.querySelectorAll('mark[data-claim-id]').forEach(el => el.classList.remove('ring-2', 'ring-terracotta-500'));
+        document.querySelectorAll('mark[data-claim-id]').forEach(el => el.classList.remove('ring-2', 'ring-blue-500'));
         const activeMark = document.querySelector('mark[data-claim-id="' + claimId + '"]');
         if (activeMark) {
-            activeMark.classList.add('ring-2', 'ring-terracotta-500');
+            activeMark.classList.add('ring-2', 'ring-blue-500');
         }
 
         // Scroll evidence card into view
         const card = document.getElementById('claim-card-' + claimId);
         if (card) {
             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('ring-2', 'ring-terracotta-500');
-            setTimeout(() => card.classList.remove('ring-2', 'ring-terracotta-500'), 2000);
+            card.classList.add('ring-2', 'ring-blue-500');
+            setTimeout(() => card.classList.remove('ring-2', 'ring-blue-500'), 2000);
         }
     }
 
@@ -408,4 +408,5 @@
     @endif
 </script>
 @endsection
+
 

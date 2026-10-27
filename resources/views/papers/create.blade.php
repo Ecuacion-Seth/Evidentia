@@ -4,16 +4,16 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
     <!-- Hero Header -->
     <div class="text-center mb-10">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EFECE6] dark:bg-[#2A2825] border border-[#E6E4DD] dark:border-[#383530] text-[#6B6760] dark:text-[#A39E93] text-xs font-medium mb-4">
-            <svg class="w-3.5 h-3.5 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EDF2F7] dark:bg-[#15203B] border border-[#E2E8F0] dark:border-[#1E293B] text-[#475569] dark:text-[#94A3B8] text-xs font-medium mb-4">
+            <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
             Toulmin-Grounded Academic Evidence Integrity
         </div>
-        <h1 class="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-[#1F1E1B] dark:text-[#ECEBE5] mb-3">
-            Verify Whether Sources <span class="italic text-terracotta-600 dark:text-terracotta-400">Actually Support</span> Claims
+        <h1 class="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-[#0F172A] dark:text-[#F1F5F9] mb-3">
+            Verify Whether Sources <span class="italic text-blue-600 dark:text-blue-400 font-serif">Actually Support</span> Claims
         </h1>
-        <p class="text-sm sm:text-base text-[#6B6760] dark:text-[#A39E93] max-w-2xl mx-auto leading-relaxed">
+        <p class="text-sm sm:text-base text-[#64748B] dark:text-[#94A3B8] max-w-2xl mx-auto leading-relaxed">
             Extract claims and citations from academic research, retrieve open-access peer-reviewed literature via OpenAlex and Crossref, and inspect evidence warrants with precision.
         </p>
     </div>
@@ -30,32 +30,32 @@
     @endif
 
     <!-- Submission Card -->
-    <div class="bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530] rounded-2xl shadow-xs p-6 sm:p-8">
+    <div class="bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] rounded-2xl shadow-xs p-6 sm:p-8">
         <form action="{{ route('papers.store') }}" method="POST" enctype="multipart/form-data" id="scanForm">
             @csrf
 
             <!-- Paper Title -->
             <div class="mb-6">
-                <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-[#6B6760] dark:text-[#A39E93] mb-2">Paper Title / Assignment Name</label>
+                <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-[#475569] dark:text-[#94A3B8] mb-2">Paper Title / Assignment Name</label>
                 <input type="text" name="title" id="title" required
-                    class="w-full px-4 py-3 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530] focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 text-[#1F1E1B] dark:text-[#ECEBE5] placeholder-[#A39E93] text-sm outline-none transition-colors"
+                    class="w-full px-4 py-3 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-[#0F172A] dark:text-[#F1F5F9] placeholder-[#94A3B8] text-sm outline-none transition-colors"
                     placeholder="e.g. Modern Neural Architectures in Academic NLP (Senior Thesis)"
                     value="{{ old('title', 'Comparative Study on Self-Attention and Deep Convolutional Networks') }}">
             </div>
 
             <!-- Input Tabs (File vs Paste) -->
             <div class="mb-6">
-                <div class="flex flex-wrap items-center gap-2 border-b border-[#E6E4DD] dark:border-[#383530] pb-3 mb-4">
+                <div class="flex flex-wrap items-center gap-2 border-b border-[#E2E8F0] dark:border-[#1E293B] pb-3 mb-4">
                     <button type="button" id="tabFileBtn"
-                        class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 bg-[#FAF9F5] dark:bg-[#181715] text-[#1F1E1B] dark:text-[#ECEBE5] border border-[#E6E4DD] dark:border-[#383530]">
-                        <svg class="w-4 h-4 text-[#6B6760] dark:text-[#A39E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#1E293B]">
+                        <svg class="w-4 h-4 text-[#64748B] dark:text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
                         Upload Document (PDF / DOCX)
                     </button>
                     <button type="button" id="tabPasteBtn"
-                        class="px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 text-[#6B6760] dark:text-[#A39E93] hover:text-[#1F1E1B] dark:hover:text-[#ECEBE5] border border-transparent">
-                        <svg class="w-4 h-4 text-[#6B6760] dark:text-[#A39E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        class="px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9] border border-transparent">
+                        <svg class="w-4 h-4 text-[#64748B] dark:text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         Direct Paste (Essay & References)
@@ -63,8 +63,8 @@
 
                     <!-- Pre-fill Sample Button -->
                     <button type="button" id="loadSampleBtn"
-                        class="sm:ml-auto px-3 py-1.5 rounded-lg border border-[#E6E4DD] dark:border-[#383530] text-terracotta-600 dark:text-terracotta-400 hover:bg-[#FAF9F5] dark:hover:bg-[#181715] text-xs font-medium transition-colors flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        class="sm:ml-auto px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1E293B] text-blue-600 dark:text-blue-400 hover:bg-[#F8FAFC] dark:hover:bg-[#0B1120] text-xs font-medium transition-colors flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                         </svg>
                         Load Sample Academic Paper
@@ -73,50 +73,50 @@
 
                 <!-- Tab 1: File Upload Dropzone -->
                 <div id="fileUploadContainer" class="space-y-4">
-                    <div class="border-2 border-dashed border-[#E6E4DD] dark:border-[#383530] hover:border-terracotta-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors bg-[#FAF9F5]/60 dark:bg-[#181715]/60"
+                    <div class="border-2 border-dashed border-[#CBD5E1] dark:border-[#1E293B] hover:border-blue-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors bg-[#F8FAFC]/60 dark:bg-[#0B1120]/60"
                          onclick="document.getElementById('paper_file').click()">
                         <input type="file" name="paper_file" id="paper_file" class="hidden" accept=".pdf,.docx,.doc,.txt" onchange="updateFileName(this)">
-                        <div class="w-12 h-12 rounded-xl bg-[#EFECE6] dark:bg-[#2A2825] flex items-center justify-center mx-auto mb-3 text-terracotta-600 dark:text-terracotta-400">
+                        <div class="w-12 h-12 rounded-xl bg-[#EDF2F7] dark:bg-[#15203B] flex items-center justify-center mx-auto mb-3 text-blue-600 dark:text-blue-400">
                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
-                        <p class="text-sm font-medium text-[#1F1E1B] dark:text-[#ECEBE5] mb-1" id="fileLabel">
-                            Drop your academic PDF or DOCX file here, or <span class="text-terracotta-600 dark:text-terracotta-400 underline">browse</span>
+                        <p class="text-sm font-medium text-[#0F172A] dark:text-[#F1F5F9] mb-1" id="fileLabel">
+                            Drop your academic PDF or DOCX file here, or <span class="text-blue-600 dark:text-blue-400 underline">browse</span>
                         </p>
-                        <p class="text-xs text-[#6B6760] dark:text-[#A39E93]">PDF or Word DOCX (APA 7th formatting with in-text citations and reference list)</p>
+                        <p class="text-xs text-[#64748B] dark:text-[#94A3B8]">PDF or Word DOCX (APA 7th formatting with in-text citations and reference list)</p>
                     </div>
                 </div>
 
                 <!-- Tab 2: Paste Raw Text -->
                 <div id="pasteContainer" class="hidden space-y-2">
-                    <label for="raw_text" class="block text-xs font-semibold text-[#6B6760] dark:text-[#A39E93] uppercase tracking-wider">
+                    <label for="raw_text" class="block text-xs font-semibold text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider">
                         Document Body & Reference List
                     </label>
                     <textarea name="raw_text" id="raw_text" rows="12"
-                        class="w-full px-4 py-3 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530] focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 text-[#1F1E1B] dark:text-[#ECEBE5] placeholder-[#A39E93] text-xs font-mono leading-relaxed outline-none transition-colors"
+                        class="w-full px-4 py-3 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-[#0F172A] dark:text-[#F1F5F9] placeholder-[#94A3B8] text-xs font-mono leading-relaxed outline-none transition-colors"
                         placeholder="Paste your essay here, including your in-text citations e.g. (Vaswani et al., 2017) and your final References section..."></textarea>
                 </div>
             </div>
 
             <!-- Execution mode note -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-[#FAF9F5] dark:bg-[#181715] border border-[#E6E4DD] dark:border-[#383530] mb-6 gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1120] border border-[#E2E8F0] dark:border-[#1E293B] mb-6 gap-3">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                     <div>
-                        <p class="text-xs font-semibold text-[#1F1E1B] dark:text-[#ECEBE5]">Continuous Open-Access Verification</p>
-                        <p class="text-[11px] text-[#6B6760] dark:text-[#A39E93]">Crossref metadata resolution and full-text retrieval via OpenAlex & Unpaywall</p>
+                        <p class="text-xs font-semibold text-[#0F172A] dark:text-[#F1F5F9]">Continuous Open-Access Verification</p>
+                        <p class="text-[11px] text-[#64748B] dark:text-[#94A3B8]">Crossref metadata resolution and full-text retrieval via OpenAlex & Unpaywall</p>
                     </div>
                 </div>
-                <label class="flex items-center gap-2 cursor-pointer text-xs text-[#6B6760] dark:text-[#A39E93]">
-                    <input type="checkbox" name="run_sync" value="1" checked class="rounded border-[#E6E4DD] dark:border-[#383530] bg-white dark:bg-[#22201D] text-terracotta-600 focus:ring-terracotta-500">
+                <label class="flex items-center gap-2 cursor-pointer text-xs text-[#475569] dark:text-[#94A3B8]">
+                    <input type="checkbox" name="run_sync" value="1" checked class="rounded border-[#CBD5E1] dark:border-[#1E293B] bg-white dark:bg-[#111C35] text-blue-600 focus:ring-blue-500">
                     <span>Direct Live Analysis</span>
                 </label>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" id="submitBtn"
-                class="w-full py-3.5 px-6 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 active:bg-terracotta-700 text-white font-semibold text-sm tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                class="w-full py-3.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
@@ -127,29 +127,29 @@
 
     <!-- Feature Explanations (The 4 Toulmin Labels) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-        <div class="p-4 rounded-xl bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530]">
+        <div class="p-4 rounded-xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B]">
             <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-semibold text-xs uppercase tracking-wider mb-1">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Supported
             </div>
-            <p class="text-[11px] text-[#6B6760] dark:text-[#A39E93] leading-relaxed">Cited source is retrievable open-access and findings directly substantiate the author's claim.</p>
+            <p class="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed">Cited source is retrievable open-access and findings directly substantiate the author's claim.</p>
         </div>
-        <div class="p-4 rounded-xl bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530]">
+        <div class="p-4 rounded-xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B]">
             <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-semibold text-xs uppercase tracking-wider mb-1">
                 <span class="w-2 h-2 rounded-full bg-amber-500"></span> Partially Supported
             </div>
-            <p class="text-[11px] text-[#6B6760] dark:text-[#A39E93] leading-relaxed">Cited source supports core context, but claim exaggerates numbers or omits essential qualifications.</p>
+            <p class="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed">Cited source supports core context, but claim exaggerates numbers or omits essential qualifications.</p>
         </div>
-        <div class="p-4 rounded-xl bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530]">
+        <div class="p-4 rounded-xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B]">
             <div class="flex items-center gap-2 text-rose-700 dark:text-rose-400 font-semibold text-xs uppercase tracking-wider mb-1">
                 <span class="w-2 h-2 rounded-full bg-rose-500"></span> Unsupported
             </div>
-            <p class="text-[11px] text-[#6B6760] dark:text-[#A39E93] leading-relaxed">Cited source explicitly refutes, contradicts, or reports findings opposite to the assertion.</p>
+            <p class="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed">Cited source explicitly refutes, contradicts, or reports findings opposite to the assertion.</p>
         </div>
-        <div class="p-4 rounded-xl bg-white dark:bg-[#22201D] border border-[#E6E4DD] dark:border-[#383530]">
-            <div class="flex items-center gap-2 text-[#6B6760] dark:text-[#A39E93] font-semibold text-xs uppercase tracking-wider mb-1">
-                <span class="w-2 h-2 rounded-full bg-stone-400"></span> Unverifiable
+        <div class="p-4 rounded-xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B]">
+            <div class="flex items-center gap-2 text-[#475569] dark:text-[#94A3B8] font-semibold text-xs uppercase tracking-wider mb-1">
+                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Unverifiable
             </div>
-            <p class="text-[11px] text-[#6B6760] dark:text-[#A39E93] leading-relaxed">Source is paywalled, unavailable as open-access full-text, or fails to address the claim topic.</p>
+            <p class="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed">Source is paywalled, unavailable as open-access full-text, or fails to address the claim topic.</p>
         </div>
     </div>
 </div>
@@ -158,7 +158,7 @@
     function updateFileName(input) {
         if (input.files && input.files[0]) {
             document.getElementById('fileLabel').innerHTML =
-                'Selected: <strong class="text-terracotta-600 dark:text-terracotta-400">' + input.files[0].name + '</strong> (' + Math.round(input.files[0].size / 1024) + ' KB)';
+                'Selected: <strong class="text-blue-600 dark:text-blue-400">' + input.files[0].name + '</strong> (' + Math.round(input.files[0].size / 1024) + ' KB)';
         }
     }
 
@@ -170,13 +170,13 @@
 
     function setActiveTab(active) {
         if (active === 'file') {
-            tabFileBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 bg-[#FAF9F5] dark:bg-[#181715] text-[#1F1E1B] dark:text-[#ECEBE5] border border-[#E6E4DD] dark:border-[#383530]';
-            tabPasteBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 text-[#6B6760] dark:text-[#A39E93] hover:text-[#1F1E1B] dark:hover:text-[#ECEBE5] border border-transparent';
+            tabFileBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#1E293B]';
+            tabPasteBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9] border border-transparent';
             fileContainer.classList.remove('hidden');
             pasteContainer.classList.add('hidden');
         } else {
-            tabPasteBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 bg-[#FAF9F5] dark:bg-[#181715] text-[#1F1E1B] dark:text-[#ECEBE5] border border-[#E6E4DD] dark:border-[#383530]';
-            tabFileBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 text-[#6B6760] dark:text-[#A39E93] hover:text-[#1F1E1B] dark:hover:text-[#ECEBE5] border border-transparent';
+            tabPasteBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#1E293B]';
+            tabFileBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9] border border-transparent';
             pasteContainer.classList.remove('hidden');
             fileContainer.classList.add('hidden');
         }
@@ -184,6 +184,7 @@
 
     tabFileBtn.addEventListener('click', () => setActiveTab('file'));
     tabPasteBtn.addEventListener('click', () => setActiveTab('paste'));
+
 
     // Sample Academic Paper Pre-filler
     document.getElementById('loadSampleBtn').addEventListener('click', () => {
