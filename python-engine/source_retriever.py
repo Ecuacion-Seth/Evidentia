@@ -209,14 +209,20 @@ class SourceRetriever:
         Downloads open-access PDF or HTML and extracts text.
         """
         try:
-            resp = requests.get(url, headers=self.headers, timeout=10, allow_redirects=True)
+            resp = requests.get(url, headers=self.headers, timeout=8, allow_redirects=True, stream=True)
             if resp.status_code != 200:
                 return None
 
             content_type = resp.headers.get("Content-Type", "").lower()
+            content = b""
+            for chunk in resp.iter_content(chunk_size=65536):
+                content += chunk
+                if len(content) > 6 * 1024 * 1024:
+                    break
+
             if "pdf" in content_type or url.endswith(".pdf"):
                 temp_pdf = self.cache_dir / f"{cache_key}_temp.pdf"
-                temp_pdf.write_bytes(resp.content)
+                temp_pdf.write_bytes(content)
                 text = ""
                 try:
                     import pdfplumber
@@ -231,7 +237,8 @@ class SourceRetriever:
                 return text if text.strip() else None
             else:
                 # HTML or plain text - strip tags
-                clean_text = re.sub(r'<[^>]+>', ' ', resp.text)
+                decoded = content.decode('utf-8', errors='ignore')
+                clean_text = re.sub(r'<[^>]+>', ' ', decoded)
                 return " ".join(clean_text.split())
         except Exception:
             return None

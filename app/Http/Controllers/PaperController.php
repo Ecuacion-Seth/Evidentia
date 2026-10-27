@@ -39,6 +39,8 @@ class PaperController extends Controller
      */
     public function store(Request $request, EvidentiaEngineService $engineService): RedirectResponse|JsonResponse
     {
+        set_time_limit(180);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'paper_file' => 'nullable|file|mimes:pdf,docx,doc,txt|max:25600',
@@ -202,6 +204,8 @@ class PaperController extends Controller
      */
     public function reassess(Paper $paper, EvidentiaEngineService $engineService): RedirectResponse
     {
+        set_time_limit(180);
+
         try {
             $engineService->assessPaper($paper);
 

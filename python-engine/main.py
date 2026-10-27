@@ -82,17 +82,30 @@ def _process_evidentia_pipeline(doc: Dict[str, Any], title: str) -> Dict[str, An
     # 3. Extract Toulmin Claims anchored to citations
     extracted_claims = claim_extractor.extract_claims(body_text, in_text_citations, references)
 
-    # 4. Source Verification & Multi-tier Open Access Retrieval
+    # 4. Source Verification & Multi-tier Open Access Retrieval (Parallel Execution)
     retrieved_sources = {}
     retrieved_count = 0
     total_sources = len(references)
 
-    for ref in references:
-        key = ref["citation_key"]
-        retrieval_res = source_retriever.verify_and_retrieve(ref)
-        retrieved_sources[key] = {**ref, **retrieval_res}
-        if retrieval_res["retrieval_status"] == "RETRIEVED":
-            retrieved_count += 1
+    if references:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=min(8, len(references))) as executor:
+            future_to_ref = {executor.submit(source_retriever.verify_and_retrieve, ref): ref for ref in references}
+            for future in future_to_ref:
+                ref = future_to_ref[future]
+                key = ref["citation_key"]
+                try:
+                    retrieval_res = future.result()
+                except Exception as e:
+                    retrieval_res = {
+                        "retrieval_status": "ERROR",
+                        "reason": f"Retrieval failed: {str(e)}",
+                        "full_text": None,
+                        "doi": ref.get("doi")
+                    }
+                retrieved_sources[key] = {**ref, **retrieval_res}
+                if retrieval_res.get("retrieval_status") == "RETRIEVED":
+                    retrieved_count += 1
 
     practical_coverage = round((retrieved_count / total_sources * 100), 1) if total_sources > 0 else 0.0
 
