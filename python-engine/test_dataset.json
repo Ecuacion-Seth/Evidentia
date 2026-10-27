@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pair_001",
+    "paper_title": "Attention Is All You Need",
+    "doi": "10.48550/arXiv.1706.03762",
+    "reference_raw": "Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention is all you need. Advances in Neural Information Processing Systems, 30.",
+    "claim_text": "The Transformer network relies entirely on an attention mechanism to draw global dependencies between input and output without using recurrent neural networks.",
+    "ground_truth_label": "SUPPORTED",
+    "ground_truth_excerpt": "The Transformer is the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequence-aligned RNNs or convolution."
+  },
+  {
+    "id": "pair_002",
+    "paper_title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    "doi": "10.48550/arXiv.1810.04805",
+    "reference_raw": "Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2018). BERT: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.",
+    "claim_text": "BERT eliminates all transformer encoders and achieves state-of-the-art results using unidirectional recurrent LSTM units.",
+    "ground_truth_label": "UNSUPPORTED",
+    "ground_truth_excerpt": "BERT is designed to pretrain deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers."
+  },
+  {
+    "id": "pair_003",
+    "paper_title": "Deep Residual Learning for Image Recognition",
+    "doi": "10.1109/CVPR.2016.90",
+    "reference_raw": "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. Proceedings of the IEEE conference on computer vision and pattern recognition, 770-778.",
+    "claim_text": "Residual networks make it easier to optimize deep networks by learning residual mapping functions with reference to layer inputs.",
+    "ground_truth_label": "SUPPORTED",
+    "ground_truth_excerpt": "We explicitly let these layers fit a residual mapping. Formally, denoting the desired underlying mapping as H(x), we let the stacked nonlinear layers fit another mapping of F(x) := H(x) - x."
+  },
+  {
+    "id": "pair_004",
+    "paper_title": "Language Models are Few-Shot Learners",
+    "doi": "10.48550/arXiv.2005.14165",
+    "reference_raw": "Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., ... & Amodei, D. (2020). Language models are few-shot learners. Advances in Neural Information Processing Systems, 33, 1877-1901.",
+    "claim_text": "GPT-3 achieves 100% human-level accuracy across all mathematical and ethical reasoning benchmarks without any errors.",
+    "ground_truth_label": "PARTIALLY_SUPPORTED",
+    "ground_truth_excerpt": "GPT-3 achieves competitive results across diverse tasks, but still struggles on some synthesis or reasoning tasks like mathematical calculations and ethics."
+  },
+  {
+    "id": "pair_005",
+    "paper_title": "Fictional or Paywalled Source Test",
+    "doi": "10.9999/nonexistent.2025.0001",
+    "reference_raw": "Mythos, Z. (2025). Undiscovered properties of hyper-quantum particles. Journal of Unverifiable Physics, 1(1), 1-10.",
+    "claim_text": "Hyper-quantum particles travel backward in time at room temperature.",
+    "ground_truth_label": "UNVERIFIABLE",
+    "ground_truth_excerpt": null
+  }
+]
