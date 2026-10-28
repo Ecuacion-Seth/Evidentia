@@ -1,10 +1,10 @@
-@extends('layouts.app', ['title' => $paper->title . ' - Evidence Integrity Report'])
+@extends('layouts.app', ['title' => $paper->title . ' - Evidence Integrity Report', 'fullHeight' => true, 'hideFooter' => true])
 
 @section('content')
-<div class="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
+<div class="flex-1 flex flex-col h-full min-h-0 overflow-hidden">
     <!-- Top Summary Ribbon -->
-    <section class="border-b border-[#E2E8F0] dark:border-[#1E293B] bg-white/95 dark:bg-[#111C35]/95 px-4 sm:px-6 py-3 flex-shrink-0 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <section class="border-b border-[#E2E8F0] dark:border-[#1E293B] bg-white/95 dark:bg-[#111C35]/95 px-4 sm:px-6 py-2.5 flex-shrink-0 backdrop-blur-md">
+        <div class="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
             <!-- Paper Info -->
             <div class="min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
@@ -86,10 +86,10 @@
         </div>
     </section>
 
-    <!-- Split-Screen Interactive Workspace -->
-    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-[#F8FAFC] dark:bg-[#0B1120]">
-        <!-- LEFT PANE: Document Viewer with Color-Coded Highlighted Claims (cols 12 -> 6) -->
-        <section class="lg:col-span-6 border-r border-[#E2E8F0] dark:border-[#1E293B] flex flex-col h-full overflow-hidden bg-[#F8FAFC] dark:bg-[#0B1120]">
+    <!-- Split-Screen Interactive Workspace with Independent Scroll Panes -->
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0 h-full overflow-hidden bg-[#F8FAFC] dark:bg-[#0B1120]">
+        <!-- LEFT PANE: Document Viewer with Color-Coded Highlighted Claims -->
+        <section class="border-b md:border-b-0 md:border-r border-[#E2E8F0] dark:border-[#1E293B] flex flex-col h-full min-h-0 overflow-hidden bg-[#F8FAFC] dark:bg-[#0B1120]">
             <div class="px-6 py-3 border-b border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B1120] flex items-center justify-between flex-shrink-0">
                 <div class="flex items-center gap-2">
                     <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,13 +100,14 @@
                 <span class="text-xs text-[#64748B] dark:text-[#94A3B8]">Click highlighted claims to inspect grounds</span>
             </div>
 
-            <!-- Scrollable Document Text -->
-            <div class="flex-1 overflow-y-auto p-6 sm:p-10 space-y-6 text-[#0F172A] dark:text-[#F1F5F9] font-serif text-base sm:text-[17px] leading-[1.8]" id="documentBody">
+            <!-- Scrollable Document Text (Independent Scroll Container) -->
+            <div class="flex-1 min-h-0 overflow-y-auto p-6 sm:p-10 space-y-6 text-[#0F172A] dark:text-[#F1F5F9] font-serif text-base sm:text-[17px] leading-[1.8] overscroll-contain" id="documentBody">
                 @if ($paper->document_text)
                     @php
                         // Process text to wrap matched claims with physical highlighter style spans
                         $renderedText = e($paper->document_text);
-                        foreach ($paper->claims as $claim) {
+                        foreach ($paper->claims as $index => $claim) {
+                            $claimNumber = $index + 1;
                             $escapedClaim = e($claim->claim_text);
                             $badgeClass = match($claim->effective_verdict) {
                                 'SUPPORTED' => 'bg-emerald-500/20 text-[#0F172A] dark:text-[#F1F5F9] border-b-2 border-emerald-600/70 dark:border-emerald-500/70 hover:bg-emerald-500/30',
@@ -115,8 +116,8 @@
                                 default => 'bg-slate-400/15 text-[#0F172A] dark:text-[#F1F5F9] border-b-2 border-slate-400 dark:border-slate-500 hover:bg-slate-400/25',
                             };
 
-                            $highlightSpan = '<mark class="cursor-pointer rounded px-1.5 py-0.5 transition-all inline font-serif ' . $badgeClass . '" data-claim-id="' . $claim->id . '" onclick="focusClaim(' . $claim->id . ')">'
-                                . $escapedClaim . ' <span class="text-[11px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#64748B] dark:text-[#94A3B8]">' . e($claim->in_text_citation) . '</span></mark>';
+                            $highlightSpan = '<mark class="cursor-pointer rounded px-1.5 py-0.5 transition-all inline font-serif ' . $badgeClass . '" data-claim-id="' . $claim->id . '" onclick="focusClaim(' . $claim->id . ')" title="Claim #' . $claimNumber . ' &bull; Click to inspect in Toulmin Inspector">'
+                                . $escapedClaim . ' <span class="text-[11px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#64748B] dark:text-[#94A3B8] inline-flex items-center gap-1"><span class="text-blue-600 dark:text-blue-400 font-bold">#' . $claimNumber . '</span> ' . e($claim->in_text_citation) . '</span></mark>';
 
                             // Replace first exact occurrence
                             $pos = strpos($renderedText, $escapedClaim);
@@ -195,8 +196,8 @@
             </div>
         </section>
 
-        <!-- RIGHT PANE: Toulmin Evidence Inspector (cols 12 -> 6) -->
-        <section class="lg:col-span-6 flex flex-col h-full overflow-hidden bg-[#F1F5F9]/60 dark:bg-[#0E1626]/60">
+        <!-- RIGHT PANE: Toulmin Evidence Inspector -->
+        <section class="flex flex-col h-full min-h-0 overflow-hidden bg-[#F1F5F9]/60 dark:bg-[#0E1626]/60">
             <div class="px-6 py-3 border-b border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B1120] flex items-center justify-between flex-shrink-0">
                 <div class="flex items-center gap-2">
                     <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -207,21 +208,28 @@
                 <span class="text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">{{ $paper->claims->count() }} Claims Audited</span>
             </div>
 
-            <!-- Scrollable Cards Feed -->
-            <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4" id="evidenceInspector">
+            <!-- Scrollable Cards Feed (Independent Scroll Container) -->
+            <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4 overscroll-contain" id="evidenceInspector">
                 @forelse ($paper->claims as $claim)
                     <article id="claim-card-{{ $claim->id }}"
                         class="p-5 rounded-2xl bg-white dark:bg-[#111C35] border border-[#E2E8F0] dark:border-[#1E293B] shadow-xs transition-all duration-200">
                         
-                        <!-- Header with Status Badge -->
+                        <!-- Header with Status Badge & Clickable Navigation Number -->
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full bg-[#EDF2F7] dark:bg-[#15203B] text-[#475569] dark:text-[#94A3B8] flex items-center justify-center text-xs font-bold font-mono">
+                                <button type="button"
+                                    onclick="focusDocumentClaim({{ $claim->id }})"
+                                    title="Click #{{ $loop->iteration }} to jump to this claim in Document Reader"
+                                    class="w-6 h-6 rounded-full bg-[#EDF2F7] dark:bg-[#15203B] text-[#475569] dark:text-[#94A3B8] hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white hover:scale-110 active:scale-95 flex items-center justify-center text-xs font-bold font-mono transition-all cursor-pointer shadow-xs border border-transparent hover:border-blue-500/30"
+                                    aria-label="Jump to claim #{{ $loop->iteration }} in document reader">
                                     {{ $loop->iteration }}
-                                </span>
-                                <span class="text-xs font-mono font-semibold text-[#0F172A] dark:text-[#F1F5F9]">
+                                </button>
+                                <button type="button"
+                                    onclick="focusDocumentClaim({{ $claim->id }})"
+                                    title="Click to jump to {{ $claim->in_text_citation }} in Document Reader"
+                                    class="text-xs font-mono font-semibold text-[#0F172A] dark:text-[#F1F5F9] hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left">
                                     {{ $claim->in_text_citation }}
-                                </span>
+                                </button>
                             </div>
 
                             <!-- Verdict Tag -->
@@ -375,21 +383,76 @@
 </div>
 
 <script>
-    // Synchronous click navigation: clicking highlighted claim highlights & scrolls right card
+    // 1. Synchronous navigation: clicking highlighted claim in document smoothly scrolls & highlights Toulmin evidence card
     function focusClaim(claimId) {
-        // Highlight active mark
-        document.querySelectorAll('mark[data-claim-id]').forEach(el => el.classList.remove('ring-2', 'ring-blue-500'));
+        // Highlight active mark in Document Reader
+        document.querySelectorAll('mark[data-claim-id]').forEach(el => {
+            el.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-1');
+        });
         const activeMark = document.querySelector('mark[data-claim-id="' + claimId + '"]');
         if (activeMark) {
-            activeMark.classList.add('ring-2', 'ring-blue-500');
+            activeMark.classList.add('ring-2', 'ring-blue-500', 'ring-offset-1');
         }
 
-        // Scroll evidence card into view
+        // Scroll evidence card into view within evidenceInspector container ONLY (isolated, no window jump)
+        const inspector = document.getElementById('evidenceInspector');
+        const card = document.getElementById('claim-card-' + claimId);
+        if (inspector && card) {
+            const inspectorRect = inspector.getBoundingClientRect();
+            const cardRect = card.getBoundingClientRect();
+            const targetScrollTop = inspector.scrollTop + (cardRect.top - inspectorRect.top) - (inspector.clientHeight / 2) + (cardRect.height / 2);
+
+            inspector.scrollTo({
+                top: Math.max(0, targetScrollTop),
+                behavior: 'smooth'
+            });
+
+            // Highlight card
+            document.querySelectorAll('[id^="claim-card-"]').forEach(el => {
+                el.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
+            });
+            card.classList.add('ring-2', 'ring-blue-500', 'shadow-md');
+            setTimeout(() => {
+                card.classList.remove('shadow-md');
+            }, 2500);
+        }
+    }
+
+    // 2. Synchronous reverse navigation: clicking number badge on Toulmin card smoothly scrolls & highlights document claim
+    function focusDocumentClaim(claimId) {
+        // Highlight active card in Toulmin Inspector
+        document.querySelectorAll('[id^="claim-card-"]').forEach(el => {
+            el.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
+        });
         const card = document.getElementById('claim-card-' + claimId);
         if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('ring-2', 'ring-blue-500');
-            setTimeout(() => card.classList.remove('ring-2', 'ring-blue-500'), 2000);
+            card.classList.add('ring-2', 'ring-blue-500', 'shadow-md');
+            setTimeout(() => {
+                card.classList.remove('shadow-md');
+            }, 2500);
+        }
+
+        // Scroll mark into view within documentBody container ONLY (isolated, no window jump)
+        const docContainer = document.getElementById('documentBody');
+        const mark = document.querySelector('mark[data-claim-id="' + claimId + '"]');
+        if (docContainer && mark) {
+            const docRect = docContainer.getBoundingClientRect();
+            const markRect = mark.getBoundingClientRect();
+            const targetScrollTop = docContainer.scrollTop + (markRect.top - docRect.top) - (docContainer.clientHeight / 2) + (markRect.height / 2);
+
+            docContainer.scrollTo({
+                top: Math.max(0, targetScrollTop),
+                behavior: 'smooth'
+            });
+
+            // Highlight mark with pulse
+            document.querySelectorAll('mark[data-claim-id]').forEach(el => {
+                el.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-1');
+            });
+            mark.classList.add('ring-2', 'ring-blue-500', 'ring-offset-1');
+            setTimeout(() => {
+                mark.classList.remove('ring-offset-1');
+            }, 2500);
         }
     }
 

@@ -41,6 +41,13 @@
             font-family: 'JetBrains Mono', monospace;
         }
         /* Custom scrollbar for readable panes */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+        }
+        .dark * {
+            scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+        }
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -63,9 +70,9 @@
         }
     </style>
 </head>
-<body class="min-h-full flex flex-col bg-[#F8FAFC] text-[#0F172A] dark:bg-[#0B1120] dark:text-[#F1F5F9] transition-colors duration-200 selection:bg-blue-500/20 selection:text-blue-900 dark:selection:text-blue-200">
+<body class="{{ ($fullHeight ?? false) ? 'h-screen overflow-hidden' : 'min-h-full' }} flex flex-col bg-[#F8FAFC] text-[#0F172A] dark:bg-[#0B1120] dark:text-[#F1F5F9] transition-colors duration-200 selection:bg-blue-500/20 selection:text-blue-900 dark:selection:text-blue-200">
     <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-50 border-b border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC]/90 dark:bg-[#0B1120]/90 backdrop-blur-md">
+    <header class="sticky top-0 z-50 flex-shrink-0 border-b border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC]/90 dark:bg-[#0B1120]/90 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <!-- Brand Logo -->
             <a href="{{ route('papers.create') }}" class="flex items-center gap-3 group">
@@ -118,9 +125,9 @@
     </header>
 
     <!-- Main Content Slot -->
-    <main class="flex-1 flex flex-col">
+    <main class="flex-1 flex flex-col min-h-0 {{ ($fullHeight ?? false) ? 'overflow-hidden' : '' }}">
         @if (session('status'))
-            <div class="bg-blue-500/10 border-b border-blue-500/20 text-blue-800 dark:text-blue-300 px-4 py-2.5 text-sm text-center font-medium">
+            <div class="bg-blue-500/10 border-b border-blue-500/20 text-blue-800 dark:text-blue-300 px-4 py-2.5 text-sm text-center font-medium flex-shrink-0">
                 {{ session('status') }}
             </div>
         @endif
@@ -129,8 +136,9 @@
         @yield('content')
     </main>
 
+    @if (!($hideFooter ?? false))
     <!-- Footer -->
-    <footer class="border-t border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B1120] py-6 text-center text-xs text-[#64748B] dark:text-[#94A3B8]">
+    <footer class="border-t border-[#E2E8F0] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B1120] py-6 text-center text-xs text-[#64748B] dark:text-[#94A3B8] flex-shrink-0">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p>Evidentia &copy; {{ date('Y') }} — Grounded in the Toulmin Model of Argumentation.</p>
             <div class="flex items-center gap-4">
@@ -140,6 +148,7 @@
             </div>
         </div>
     </footer>
+    @endif
 
     <!-- Theme Toggle Helper Script -->
     <script>
