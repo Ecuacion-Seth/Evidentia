@@ -6,9 +6,28 @@ Evidentia is an open-source academic integrity platform that evaluates research 
 
 ---
 
+## Theoretical and Technical Foundations
+
+Evidentia translates established theoretical frameworks in computational argumentation, open-access bibliometrics, and explainable natural language inference into a working verification pipeline. Every technical decision in the architecture addresses documented limitations in prior literature:
+
+| Pipeline Component | Theoretical / Empirical Foundation | Methodological Grounding & Architectural Role |
+| :--- | :--- | :--- |
+| **Argument Deconstruction** | Toulmin (2003); Gupta et al. (2024); Turós et al. (2025) | Grounds argument decomposition into Claims, Grounds, and Warrants; justifies zero-shot LLM argument explication and demonstrates that Toulmin coding applies robustly to student writing. |
+| **Retrieve-Then-Verify Paradigm** | Poliak et al. (2018); Wadden et al. (2020) | Prevents "hypothesis-only bias" where classifiers predict entailment without consulting evidence; justifies the retrieve-first architecture modeled after scientific claim verification (SciFact). |
+| **Open-Access Retrieval** | Priem, Piwowar, & Orr (2022); Piwowar et al. (2018) | Adopts OpenAlex as a comprehensive scholarly index and empirically grounds the **Practical Coverage** ceiling by recognizing that only ~28–31% of scholarly literature is open access. |
+| **Passage Candidate Ranking** | Robertson & Zaragoza (2009) | Employs the Probabilistic Relevance Framework (BM25) to isolate candidate evidence passages from full-text sources prior to inference. |
+| **Four-Tier Verdict Taxonomy** | Nicholson et al. (2021); Kunnath et al. (2021); Haan (2025) | Generalizes citation-context classification (scite) and full-text verification (SemanticCite) into four standardized categories (`SUPPORTED`, `PARTIALLY_SUPPORTED`, `UNSUPPORTED`, `UNVERIFIABLE`). |
+| **Explainable Warrants** | Camburu et al. (2018) | Implements Natural Language Explanations (e-SNLI) so the system generates inspectable justification warrants rather than unexplained labels. |
+| **Stylometric Heuristic** | Gehrmann, Strobelt, & Rush (2019) | Adopts the Giant Language Model Test Room (GLTR) principle: statistical regularity is an inspectable visual heuristic for human decision support, never standalone proof. |
+| **PDF Extraction Reliability** | Meuschke et al. (2023) | Acknowledges the benchmarked error variance and layout challenges of rule-based PDF parsing (`pdfplumber`) on academic documents. |
+| **Citation Formatting Standard** | American Psychological Association (2020) | Implements the official APA 7th Edition specification for reference list parsing and in-text citation resolution. |
+| **Pedagogical Ethics** | Deep et al. (2025) | Bases the non-punitive design on empirical studies documenting high false-positive rates and ethical harms of commercial AI detectors in higher education. |
+
+---
+
 ## Architecture Overview
 
-Evidentia is designed as a modular, hybrid architecture: a Laravel 12 application handling user interactions, authentication, database persistence, and presentation, paired with a Python NLP microservice (FastAPI) responsible for document parsing, bibliographic resolution, open-access literature retrieval, and semantic evidence matching.
+Evidentia is structured as a modular, hybrid architecture: a Laravel 12 application managing user interaction, database persistence, and presentation, paired with an asynchronous Python NLP microservice (FastAPI) executing document parsing, bibliographic resolution, literature retrieval, and semantic evidence matching.
 
 ```mermaid
 flowchart TB
@@ -83,7 +102,7 @@ sequenceDiagram
     Instructor->>Web: Upload Paper (PDF/DOCX) or paste text
     Web->>Engine: Send document for integrity assessment
     Engine->>Engine: Segment text into Body and References sections
-    Engine->>Engine: Parse APA in-text citations & references
+    Engine->>Engine: Parse APA 7th in-text citations & references
     alt Ollama Available
         Engine->>Ollama: Extract Toulmin claims tied to citations
         Ollama-->>Engine: Structured claims JSON
@@ -112,80 +131,87 @@ sequenceDiagram
 ## Core Functionalities
 
 ### 1. Document Ingestion and Segmentation
-- Ingests academic papers via PDF upload, Microsoft Word (`.docx`), or direct text pasting.
-- Segments submissions into the primary document body and the bibliographic references section.
-- Normalizes in-text citations and maps them directly to cited bibliography entries.
+- Ingests academic papers in PDF, Microsoft Word (`.docx`), or plain text formats.
+- Identifies and isolates the document body from the terminal bibliography based on APA 7th Edition structural conventions (American Psychological Association, 2020).
+- Normalizes in-text citations (`(Author, Year)` or narrative formats) and pairs each marker with its corresponding bibliography record.
 
 ### 2. Toulmin Argumentation Claim Extraction
-- Breaks down arguments into structured Toulmin argumentation components:
-  - **Claim:** The specific assertion or factual conclusion made in the text.
-  - **In-Text Citation:** The bibliographic citation anchor (e.g., `Vaswani et al., 2017`).
-  - **Grounds:** The retrieved evidence excerpt from the referenced scholarly publication.
-  - **Warrant:** The analytical reasoning establishing how the evidence relates to the claim.
+- Deconstructs student prose using Toulmin's (2003) model of argumentation, which recent empirical research demonstrates is effective for evaluating student writing on technical and AI topics (Turós et al., 2025):
+  - **Claim:** The specific assertion, factual claim, or conclusion put forward by the student.
+  - **In-Text Citation:** The formal bibliographic citation anchor tying the assertion to an external source.
+  - **Grounds:** The empirical facts, quotations, or data retrieved from the cited scholarly publication.
+  - **Warrant:** The analytical reasoning connecting the grounds to the claim.
+- Operationalizes zero-shot argument explication (Gupta et al., 2024) using a local LLM prompt template, with automated fallback to syntactic sentence-window extraction when offline.
 
 ### 3. Multi-Tier Open-Access Literature Retrieval
-- Automated resolution of missing Digital Object Identifiers (DOIs) using the Crossref REST API.
-- Integration with OpenAlex and Unpaywall to locate legally accessible open-access full-text PDFs and text dumps.
-- Thread-pooled concurrent retrieval backed by a local filesystem cache (`python-engine/cache/`) to eliminate duplicate network traffic.
-- Reports **Practical Coverage**: the exact proportion of cited external sources retrievable as open-access full text, establishing an honest verification ceiling.
+- Resolves missing DOIs via the Crossref REST API.
+- Leverages the OpenAlex catalog (Priem, Piwowar, & Orr, 2022) and the Unpaywall API to retrieve full-text open-access PDFs and text dumps.
+- Implements thread-pooled parallel downloads backed by a local SHA-256 disk cache (`python-engine/cache/`).
+- Computes **Practical Coverage**:
+  $$\text{Practical Coverage} = \left(\frac{\text{Retrieved Open-Access References}}{\text{Total Cited References}}\right) \times 100$$
+  This metric directly reflects the empirical findings of Piwowar et al. (2018), which establish that only ~28–31% of published scholarly literature is available via open access. Unretrievable or paywalled works are treated as an expected scope ceiling rather than student infractions.
 
 ### 4. Natural Language Inference (NLI) Verification
-- Chunks retrieved source documents into overlapping semantic passages and ranks relevance against the claim using BM25 term weighting.
-- Classifies claims into four distinct verdicts:
-  - `SUPPORTED`: The cited source directly substantiates the assertion.
-  - `PARTIALLY_SUPPORTED`: The source supports the general context, but the claim overstates findings or omits essential qualifications.
-  - `UNSUPPORTED`: The cited source refutes, contradicts, or presents conclusions contrary to the assertion.
-  - `UNVERIFIABLE`: The source is behind a paywall, unavailable as open access, or does not address the claim topic.
+- **Mitigating Hypothesis-Only Bias:** Natural Language Inference systems evaluated without evidence frequently learn to predict entailment based solely on linguistic artifacts in the hypothesis (Poliak et al., 2018). Evidentia resolves this by enforcing a retrieve-then-verify workflow modeled after scientific fact verification benchmarks (Wadden et al., 2020).
+- **Passage Selection:** Chunks retrieved full-text papers into sliding windows (200 words, 40-word overlap) and ranks relevance against the student claim using the BM25 probabilistic relevance framework (Robertson & Zaragoza, 2009).
+- **Classification Taxonomy:** Maps claims into four standardized categories grounded in citation-intent classification (Nicholson et al., 2021; Kunnath et al., 2021) and AI-assisted citation auditing (Haan, 2025):
+  - `SUPPORTED`: The retrieved excerpt directly substantiates the author's claim.
+  - `PARTIALLY_SUPPORTED`: The source corroborates the domain or background, but the claim overstates findings, exaggerates statistical metrics, or omits caveats.
+  - `UNSUPPORTED`: The retrieved text directly contradicts, disproves, or reports findings opposite to the assertion.
+  - `UNVERIFIABLE`: The source is behind a commercial paywall, unindexed, or fails to address the claim topic.
+- **Natural Language Warrants:** Rather than returning uninterpretable label probabilities, the engine generates an explicit explanatory warrant, adopting the explainable Natural Language Explanation (NLE) paradigm (Camburu et al., 2018).
 
 ### 5. Interactive Split-Screen Reader & Inspector
-- **Left Pane (Document Reader):** Displays the submitted text with interactive color-coded highlights representing each claim. Selecting any highlighted claim scrolls and activates its corresponding evidence card.
-- **Right Pane (Evidence Inspector):** Presents individual Toulmin audit cards containing the extracted student claim, the retrieved source quote, the verification warrant, match confidence score, and direct DOI/open-access links.
+- **Left Pane (Document Reader):** Displays the submitted manuscript with dynamic, color-coded inline highlighters. Clicking any highlighted claim triggers synchronous navigation to its inspection card.
+- **Right Pane (Evidence Inspector):** Houses individual Toulmin audit cards showing the student's assertion, the exact verbatim excerpt from the peer-reviewed literature, the reasoning warrant, match confidence, and direct DOI links.
 
 ### 6. Human-in-the-Loop Instructor Overrides
-- Enables instructors to review automated verdicts, apply manual adjustments (e.g., if a source was verified via a print volume or institutional library subscription), and record pedagogical notes.
-- Manual overrides are clearly flagged while preserving the original automated analysis for transparency.
+- Provides editable review accordions for instructors to override automated verdicts (e.g., when a source is verified through a physical textbook or library paywall) and record pedagogical grading notes.
+- Maintains a clean audit trail by preserving the original automated analysis alongside instructor modifications.
 
 ### 7. Supplementary Stylometric Regularity Indicator
-- Evaluates sentence burstiness (variance of sentence lengths) and lexical entropy.
-- Paired with strict cautionary disclaimers affirming that structural regularity can occur naturally in formal academic prose and must never be used as ground-truth proof of machine generation.
+- Computes sentence burstiness (the coefficient of variation of sentence lengths) and unigram Shannon entropy.
+- Implements the foundational philosophy of the Giant Language Model Test Room (Gehrmann, Strobelt, & Rush, 2019): statistical regularity serves strictly as an inspectable visual aid for human decision support, never as conclusive proof of machine authorship.
+- Displays a mandatory modal disclaimer cautioning that low perplexity and structural uniformity naturally characterize formal academic discourse.
 
 ### 8. Institutional Audit Export
-- Machine-readable JSON export endpoint (`GET /papers/{id}/export/json`) providing a complete evidence audit trail for departmental review or academic integrity committees.
+- Generates comprehensive, machine-readable JSON reports (`GET /papers/{id}/export/json`) suitable for departmental committees, accreditation evidence, or academic integrity review.
 
 ---
 
 ## Evaluation Dataset & Research Alignment
 
-In strict accordance with the Chapter 1 methodology and delimitation:
-- **No Synthetic Text:** The benchmark dataset (`python-engine/test_dataset.json`) is constructed **exclusively from authentic, human-annotated peer-reviewed publications** (including foundational works by Vaswani et al., Devlin et al., He et al., and Brown et al.).
-- **Zero AI-Generated Papers:** No synthetically generated essays, artificial hallucinations, or synthetic citations are included in the formal evaluation benchmark.
-- **Balanced Class Distribution:** Test pairs cover all four target verification categories: `SUPPORTED`, `PARTIALLY_SUPPORTED`, `UNSUPPORTED`, and an unretrievable edge case for `UNVERIFIABLE`.
-- **Reproducible Evaluation Script:** An evaluation runner (`python-engine/eval.py`) calculates precision, recall, and classification accuracy against ground-truth human annotations without external data contamination.
+In strict alignment with the thesis Chapter 1 methodology and scope boundaries:
+- **Zero Synthetic Text:** The benchmark dataset (`python-engine/test_dataset.json`) is composed **strictly of authentic, human-annotated peer-reviewed publications** (including landmark works by Vaswani et al., Devlin et al., He et al., and Brown et al.). No AI-generated papers, synthetic hallucinations, or simulated citations are present.
+- **Balanced Four-Class Distribution:** Test instances represent balanced ground-truth distributions across all target verification classes (`SUPPORTED`, `PARTIALLY_SUPPORTED`, `UNSUPPORTED`, and unretrievable/paywalled cases for `UNVERIFIABLE`).
+- **Reproducible Evaluation:** The evaluation script (`python-engine/eval.py`) benchmarks retrieval precision, recall, and NLI accuracy directly against human annotations.
 
 ---
 
 ## Model Capacity, Engineering Scope, and Limitations
 
-To maintain academic rigor and transparent expectations, the system acknowledges specific engineering delimitations:
+To maintain academic rigor and transparent scholarly expectations, the system documents four key engineering constraints:
 
-### 1. Local LLM Capacity (`llama3.2:3b`)
+### 1. Local 3B Parameter Model Scope (`llama3.2:3b`)
 - The reasoning engine uses a quantized 3B parameter model (`llama3.2:3b`) running locally via Ollama.
-- **Feasibility Rationale:** Chosen to enable local execution without cloud API subscription costs, institutional privacy risks, or specialized server hardware.
-- **Capacity Boundaries:** A 3B parameter model operating zero-shot on argument extraction and 4-way Natural Language Inference represents a lightweight baseline. Complex syntactic entailment and nuanced domain-specific discourse may result in classification errors.
-- **Empirical Validation:** Rather than claiming state-of-the-art NLI performance, Evidentia frames its inference as a feasible prototype whose real-world utility is evaluated through empirical accuracy numbers against human-annotated benchmarks.
+- **Feasibility Rationale:** Designed to run on accessible consumer hardware without cloud API costs, proprietary data transfer, or privacy vulnerabilities.
+- **Capacity Limits:** A 3B parameter model performing zero-shot Toulmin explication and four-way NLI represents a lightweight undergraduate prototype. It will exhibit lower semantic precision on complex syntactic entailment compared to multi-billion parameter frontier models.
+- **Empirical Focus:** Evidentia does not claim state-of-the-art NLI accuracy; performance is reported empirically against human-annotated benchmarks.
 
-### 2. Rule-Based Fallback Limitations
-- When Ollama is offline or unavailable, the system defaults to heuristic sentence segmentation and BM25 term matching.
-- While this guarantees operational uptime and zero-dependency fallbacks, the heuristic layer cannot capture subtle semantic shifts, deep rhetorical sarcasm, or complex negations.
+### 2. Rule-Based Fallback Boundaries
+- When Ollama is offline, the system defaults to rule-based keyword extraction and BM25 overlap matching.
+- While this guarantees operational resilience, heuristic fallbacks cannot capture nuanced rhetorical shifts, indirect contradictions, or domain-specific idioms.
 
-### 3. PDF Extraction Variance
-- Document parsing relies on `pdfplumber` and `python-docx`.
-- As documented in academic literature on document analysis (Meuschke et al., 2023), rule-based PDF text extraction exhibits inherent variance when dealing with multi-column layouts, embedded mathematical formulas, floating figures, and non-standard font encodings.
+### 3. PDF Ingestion Variance
+- Document parsing utilizes `pdfplumber` and `python-docx`.
+- As benchmarked by Meuschke et al. (2023), rule-based PDF extraction inherits well-documented error rates when handling multi-column academic layouts, complex mathematical notations, figure interruptions, and varied font encodings.
 
-### 4. Pedagogical Safeguards
-- Because automated NLP tools possess non-zero error rates, Evidentia implements a non-punitive architecture:
-  - Paywalled or unparseable sources default safely to `UNVERIFIABLE` rather than penalizing the student.
-  - The instructor retains full authority to override verdicts and document exceptions through the review interface.
+### 4. Ethical Safeguards Against False Accusations
+- Commercial AI detection platforms produce opaque, unexplainable probability scores that suffer from documented false-positive disparities against non-native English writers and technical prose (Deep et al., 2025).
+- Evidentia mitigates these risks by adhering to three non-punitive principles:
+  1. **Evidence-First Verification:** Every challenge is anchored to an inspectable excerpt from the cited source.
+  2. **Safe Defaults:** Paywalled or unretrievable sources default to `UNVERIFIABLE` rather than penalizing students.
+  3. **Human Primacy:** Automated outputs are advisory; instructors maintain ultimate discretion through manual overrides.
 
 ---
 
@@ -262,6 +288,15 @@ erDiagram
 - **Database:** SQLite (default for development) or MySQL 8.0+ / MariaDB 10.5+
 - **Ollama (Optional):** Version 0.3+ with model `llama3.2:3b`
 
+### Tools & Documentation References
+- [Laravel 12 Documentation](https://laravel.com/docs/12.x) - Backend application framework
+- [FastAPI Documentation](https://fastapi.tiangolo.com/) - High-performance Python web framework
+- [pdfplumber](https://github.com/jsvine/pdfplumber) - PDF text and layout extraction library
+- [python-docx](https://python-docx.readthedocs.io/) - Microsoft Word document processing library
+- [Ollama](https://ollama.ai/) - Local large language model execution runtime
+- [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/) - Academic DOI resolution and metadata service
+- [OpenAlex API](https://docs.openalex.org/) - Open catalog of global scholarly literature
+
 ### PHP Packages (`composer.json`)
 - `laravel/framework`: ^11.0 / ^12.0
 - `laravel/tinker`: ^3.0
@@ -288,7 +323,7 @@ erDiagram
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/evidentia.git
+git clone https://github.com/Ecuacion-Seth/Evidencia.git evidentia
 cd evidentia
 ```
 
@@ -296,7 +331,7 @@ cd evidentia
 ```bash
 cp .env.example .env
 ```
-Generate the application key:
+Generate the application encryption key:
 ```bash
 php artisan key:generate
 ```
@@ -332,7 +367,7 @@ npm run build
 ```
 
 ### 6. Install Python Microservice Dependencies
-Ensure Python 3.10+ is accessible:
+Ensure Python 3.10+ is available:
 ```bash
 cd python-engine
 pip install -r requirements.txt
@@ -340,13 +375,13 @@ cd ..
 ```
 
 ### 7. Configure Local Ollama (Optional)
-Evidentia functions out of the box with rule-based heuristics if Ollama is not installed. To activate local LLM inference:
+Evidentia functions out of the box with heuristic fallbacks if Ollama is not installed. To activate local LLM inference:
 1. Install [Ollama](https://ollama.ai).
-2. Download the Llama 3.2 3B model:
+2. Download the Llama 3.2 3B parameter model:
    ```bash
    ollama pull llama3.2:3b
    ```
-3. Ensure the Ollama daemon is active (defaulting to `http://localhost:11434`).
+3. Ensure the Ollama daemon is active (`http://localhost:11434`).
 
 ---
 
@@ -515,21 +550,24 @@ python python-engine/eval.py
 
 ---
 
-## Pedagogical & Ethical Framework
-
-Commercial AI detection platforms generate opaque percentage scores (e.g., "89% AI") that cannot be explained, audited, or contested. These systems suffer from documented false-positive disparities against non-native English speakers, specialized terminology, and standardized academic formats.
-
-Evidentia operates on three founding tenets:
-1. **Inspectable Grounds:** Findings are tied to specific source passages. When an assertion is questioned, educators and students inspect the retrieved excerpt and verification warrant together.
-2. **Graceful Fallbacks:** Unretrievable or paywalled literature is assigned the `UNVERIFIABLE` label rather than penalizing the student.
-3. **Instructor Discretion:** Automated outputs serve as transparent pedagogical aids. Instructors maintain the capability to evaluate context, record instructional notes, and override verdicts.
-
----
-
 ## References
 
-- Meuschke, N., Stange, N., Greiner, M., & Gipp, B. (2023). A Benchmark of PDF Information Extraction Tools using a Multi-Task and Multi-Domain Evaluation Framework for Academic Documents. *iConference 2023*. https://doi.org/10.1007/978-3-031-28032-0_31
-- Toulmin, S. E. (2003). *The Uses of Argument* (Updated ed.). Cambridge University Press.
+1. **American Psychological Association.** (2020). *Publication manual of the American Psychological Association* (7th ed.). https://doi.org/10.1037/0000165-000
+2. **Camburu, O.-M., Rocktäschel, T., Lukasiewicz, T., & Blunsom, P.** (2018). e-SNLI: Natural language inference with natural language explanations. *Advances in Neural Information Processing Systems (NeurIPS 2018)*, 31, 9539–9549. https://doi.org/10.48550/arxiv.1812.01193
+3. **Deep, P. D., Roy, S., & Sultana, S.** (2025). Evaluating the effectiveness and ethical implications of AI detection tools in higher education. *Information*, 16(10), 905. https://doi.org/10.3390/info16100905
+4. **Gehrmann, S., Strobelt, H., & Rush, A. M.** (2019). GLTR: Statistical detection and visualization of generated text. *Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics: System Demonstrations*, 111–116. https://doi.org/10.18653/v1/p19-3019
+5. **Gupta, A., Zuckerman, E., & O'Connor, B. T.** (2024). Harnessing Toulmin's theory for zero-shot argument explication. *Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, 10079–10098. https://doi.org/10.18653/v1/2024.acl-long.552
+6. **Haan, S.** (2025). SemanticCite: Citation verification with AI-powered full-text analysis and evidence-based reasoning. *arXiv preprint*. https://doi.org/10.48550/arxiv.2511.16198
+7. **Kunnath, S. N., Pride, D., & Knoth, P.** (2021). A meta-analysis of semantic classification of citations. *Quantitative Science Studies*, 2(4), 1170–1187. https://doi.org/10.1162/qss_a_00159
+8. **Meuschke, N., Stange, N., Greiner, M., & Gipp, B.** (2023). A benchmark of PDF information extraction tools using a multi-task and multi-domain evaluation framework for academic documents. In *Information for a Better World: Normality, Virtuality, Physicality, Inclusivity (iConference 2023)* (pp. 383–405). Springer. https://doi.org/10.1007/978-3-031-28032-0_31
+9. **Nicholson, J. M., Mlynek, M., Sintunavarat, C., Hepding, H., Li, J., Chawla, L., & Adams, R.** (2021). scite: A smart citation index that displays the context of citations and classifies their intent using deep learning. *Quantitative Science Studies*, 2(3), 882–898. https://doi.org/10.1162/qss_a_00146
+10. **Piwowar, H., Priem, J., Larivière, V., Alperin, J. P., Matthias, L., Norlander, B., Farley, A., West, J., & Haustein, S.** (2018). The state of OA: A large-scale analysis of the prevalence and impact of Open Access articles. *PeerJ*, 6, e4375. https://doi.org/10.7717/peerj.4375
+11. **Poliak, A., Naradowsky, J., Aparicio, A., Sheppard, R., Koehn, P., & Van Durme, B.** (2018). Hypothesis only baselines in natural language inference. *Proceedings of the 7th Joint Conference on Lexical and Computational Semantics (*SEM 2018)*, 180–191. https://doi.org/10.18653/v1/s18-2023
+12. **Priem, J., Piwowar, H., & Orr, R.** (2022). OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts. *arXiv preprint*. https://doi.org/10.48550/arxiv.2205.01833
+13. **Robertson, S., & Zaragoza, H.** (2009). The probabilistic relevance framework: BM25 and beyond. *Foundations and Trends® in Information Retrieval*, 3(4), 333–389. https://doi.org/10.1561/1500000019
+14. **Toulmin, S. E.** (2003). *The uses of argument* (Updated ed.). Cambridge University Press. https://doi.org/10.1017/cbo9780511840005
+15. **Turós, M., Kárpáti, A., & Horváth, C.** (2025). A Toulmin model analysis of student argumentation on artificial intelligence. *Education Sciences*, 15(9), 1226. https://doi.org/10.3390/educsci15091226
+16. **Wadden, D., Lin, S., Lo, K., Wang, L. L., van Zuylen, M., Cohan, A., & Hajishirzi, H.** (2020). Fact or fiction: Verifying scientific claims. *Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP 2020)*, 7534–7550. https://doi.org/10.18653/v1/2020.emnlp-main.609
 
 ---
 
